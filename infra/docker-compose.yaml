@@ -19,6 +19,8 @@ services:
     image: wordpress:5.1.1-fpm-alpine
     container_name: wordpress
     restart: always
+    ports:
+      - "9000:9000"
     links:
       - db
     networks:
@@ -39,6 +41,8 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     container_name: db
+    ports:
+      - "3306:3306"
     volumes:
       - dbdata:/var/lib/mysql
     networks:
@@ -57,3 +61,4 @@ networks:
   frontend:
     driver: bridge
   backend:
+    driver: bridge
