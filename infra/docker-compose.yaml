@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  frontend:
+    depends_on:
+      - wordpress
+    image: nginx:1.15.12-alpine
+    container_name: frontend
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - wordpress:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+    networks:
+      - frontend
+      
+  wordpress:
+    image: wordpress:5.1.1-fpm-alpine
+    container_name: wordpress
+    restart: always
+    links:
+      - db
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: $MYSQL_USER
+      WORDPRESS_DB_PASSWORD: $MYSQL_PASSWORD
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress:/var/www/html
+
+  db:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    container_name: db
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: wordpress
+
+volumes:
+  wordpress:
+  dbdata:
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
