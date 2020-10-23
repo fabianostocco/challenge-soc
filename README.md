@@ -10,7 +10,7 @@ Nesse arquivo contém as instruções para relizar o teste para a vaga na equipe
 ---
 ### Instruções
 
-Neste repositório você encontrará o serviço do Wordpress e um banco de dados em PostgreSQL para utilizar no seu teste. 
+Neste repositório você encontrará o serviço do Wordpress e um banco de dados em MySQL para utilizar no seu teste. 
 
 - Para utilizar a imagem do container do Wordpress, deverá fazer download utilizando o link passado via e-mail e a importar a imagem utilizando o comando:
 ```
