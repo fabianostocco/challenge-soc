@@ -35,7 +35,6 @@ O monitoramento dessa infraestrutura pode ser utilizando uma stack local como EL
 **OBS**
 - subir todo ambiente em container (swarm,k8s,docker-compose )
 - salvar ambiente para replicação e avaliação
-- 
 
 **Use a seçcão [abaixo](#resolução-do-teste) para documentar a execução do seu teste ou apontar a documentação feita por você.**
 
