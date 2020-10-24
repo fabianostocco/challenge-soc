@@ -20,12 +20,12 @@ O objetivo desse teste é monitorar todos serviço como CMS e o banco de dados, 
 
 Os requisitos de monitoramento dessa infraestrutura são:
 
-- Efetuar uma analise de vulnerabilidade no ambiente ( utilizando ferramentas de análise de vulnerabilidade do mercado ou qualquer uma opensource)
-- Enviar todos logs para um concentrador de logs (utilizar a stack elk)
-- monitorar todo ambiente com IDS/IPS (suricata ou snort ) 
+- Efetuar uma analise de vulnerabilidade no ambiente (utilizando ferramentas de análise de vulnerabilidade do mercado ou qualquer uma opensource)
+- Enviar todos logs para um concentrador de logs (utilizar a stack ELK)
+- monitorar todo ambiente com IDS/IPS (suricata ou snort) 
 
 
-O monitoramento dessa infraestrutura pode ser utilizando uma stack local como ELK ou Grafana com Prometheus ou utilizando alguma ferramenta SaaS (por exemplo, sydig ou NewRelic ou CloudWatch ou Elastic). Esperamos a solução na forma de script e documentação caso seja necessário o provisionamento da stack de monitoramento e a configuração do monitoramento das aplicações e banco de dados local. Caso seja uma ferramenta no modelo SaaS precisaremos de scripts que façam a configuração do monitoramento e documentação da utilização da ferramenta SaaS. É necessário realizar as seguintes tarefas no monitoramento da infraestrutura:
+O monitoramento dessa infraestrutura pode ser utilizando uma stack local como ELK ou ELK SaaS. Esperamos a solução na forma de script e documentação caso seja necessário o provisionamento da stack de monitoramento e a configuração do monitoramento das aplicações e banco de dados local. Caso seja uma ferramenta no modelo SaaS precisaremos de scripts que façam a configuração do monitoramento e documentação da utilização da ferramenta SaaS. É necessário realizar as seguintes tarefas no monitoramento da infraestrutura:
 
 - Dashboard de monitoramento de métricas dos recursos das aplicações e do serviço de banco de dados;
 - Dashboard para monitoramento das aplicações, podendo ser no modelo do APM ou busca de logs/erros via pesquisa (requer documentação caso os logs sejam via pesquisa**);
