@@ -15,7 +15,7 @@ Para teste você deverá:
 Subir uma aplicacao web qualquer - CMS (wp,joomla,phpbb etc..)
 ```
 
-O objetivo desse teste é monitorar todos serviço como CMS e o banco de dados, tanto as métricas quanto os logs dos container.
+O objetivo desse teste é monitorar todos serviços como CMS e o banco de dados, tanto as métricas quanto os logs dos containers.
 
 
 Os requisitos de monitoramento dessa infraestrutura são:
