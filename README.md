@@ -63,7 +63,8 @@ Partindo que possui o AWS Cli configurado iremos:
 `aws ec2 describe-instances --instance-ids i-005fe4d4469de5c14 | grep PublicIp`
 
 - Instalar e configurar pré-requisitos;
-`ssh -i Downloads/soc.pem ec2-user@18.235.0.245
+```
+ssh -i Downloads/soc.pem ec2-user@18.235.0.245
 #Elevação
 sudo su -
 
@@ -91,4 +92,5 @@ curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
-sysctl -p`
+sysctl -p
+```
