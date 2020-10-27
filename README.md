@@ -46,23 +46,23 @@ A FAZER
 
 Partindo que possui o AWS Cli configurado iremos:
 
-- Criar a Security Group liberando o IP de origem:
+- Criar a Security Group liberando o IP de origem;
 `aws ec2 create-security-group --group-name SocSG --description "Security group minimo para SOC" --vpc-id vpc-da44c4bd` 
 `aws ec2 authorize-security-group-ingress --group-id sg-0d756a342ae3e0e21 --protocol tcp --port 1-65535 --cidr 45.235.52.206/32`
 
-- Criar um EBS onde rodara o volume /var/lib/docker:
+- Criar um EBS onde rodara o volume /var/lib/docker;
 `aws ec2 create-volume --volume-type gp2 --size 32 --availability-zone us-east-1a`
 
-- Criar a instancia:
+- Criar a instancia;
 `aws ec2 run-instances --image-id ami-0947d2ba12ee1ff75 --count 1 --instance-type t2.large --key-name soc --security-group-ids sg-0d756a342ae3e0e21 --subnet-id subnet-b41560d1`
 
-- Conectar o EBS a instancia:
+- Conectar o EBS a instancia;
 `aws ec2 attach-volume --volume-id vol-0a37d4825e052b9f1 --instance-id i-005fe4d4469de5c14 --device /dev/sdb`
 
-- Descobrir o IP Publico:
+- Descobrir o IP Publico;
 `aws ec2 describe-instances --instance-ids i-005fe4d4469de5c14 | grep PublicIp`
 
-- Instalar e configurar pré-requisitos.
+- Instalar e configurar pré-requisitos;
 `ssh -i Downloads/soc.pem ec2-user@18.235.0.245
 #Elevação
 sudo su -
