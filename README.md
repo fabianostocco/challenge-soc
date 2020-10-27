@@ -1,14 +1,4 @@
-
-
-### Índice
-<!--ts-->
- * [Instruções](#instruções)</li>
- * [Resolução do Teste](#resolução-do-teste)</li>
- * [Resultados](#resultados)</li>
-<!--te-->
-
----
-### Instruções
+### Introdução
 
 Segue possível resolução para o Teste de SOC.
 
@@ -17,84 +7,41 @@ Partindo do bate papo, referenciaram a utilização da Amazon como Cloud padrão
 
 - Foi utilizado o Docker Compose para Start dos contêineres.
 
-- Efetuar uma analise de vulnerabilidade no ambiente (utilizando ferramentas de análise de vulnerabilidade do mercado ou qualquer uma opensource):
+- (Solicitado) Efetuar uma analise de vulnerabilidade no ambiente (utilizando ferramentas de análise de vulnerabilidade do mercado ou qualquer uma opensource):
 Sera implementando GVM (Greenbone Vulnerability Manager ). Tal ferramenta consegue detectar aplicações, versões e possíveis vulnerabilidades.
 
-- Enviar todos logs para um concentrador de logs (utilizar a stack ELK).
+- (Solicitado) Enviar todos logs para um concentrador de logs (utilizar a stack ELK):
 Utilizado o Filebeat como ferramenta de coleta e envio dos logs ao ElasticSearch.
 
-- monitorar todo ambiente com IDS/IPS (suricata ou snort)
+- (Solicitado) Monitorar todo ambiente com IDS/IPS (suricata ou snort):
 Utilizado o Suricata em contêiner privilegiado para monitoramento da interface de entrada do servidor. Não iremos monitorar a comunicação entre as aplicações(DMZ).
 
+- (Solicitado)  Subir uma aplicação web qualquer - CMS (wp,joomla,phpbb etc..):
+Iniciado CMS Wordpress conforme exemplo.
 
+- (Solicitado) O objetivo desse teste é monitorar todos serviços como CMS e o banco de dados, tanto as métricas quanto os logs dos containers. Dashboard de monitoramento de métricas dos recursos das aplicações e do serviço de banco de dados:
+Utilizado o MetricBeat e HeatBeat para tal solicitação.
 
-### Provisionamento Ambiente EC2
+- (Solicitado)Dashboard para monitoramento das aplicações, podendo ser no modelo do APM ou busca de logs/erros via pesquisa (requer documentação caso os logs sejam via pesquisa**):
+A FAZER
 
+- (Solicitado)Envio de alertas em caso de problemas:
+A FAZER
 
-
-
-
-Para teste você deverá:
-```
-Subir uma aplicacao web qualquer - CMS (wp,joomla,phpbb etc..)
-```
-
-O objetivo desse teste é monitorar todos serviços como CMS e o banco de dados, tanto as métricas quanto os logs dos containers.
-
-
-Os requisitos de monitoramento dessa infraestrutura são:
-
-- Efetuar uma analise de vulnerabilidade no ambiente (utilizando ferramentas de análise de vulnerabilidade do mercado ou qualquer uma opensource)
-- Enviar todos logs para um concentrador de logs (utilizar a stack ELK)
-- monitorar todo ambiente com IDS/IPS (suricata ou snort) 
-
-
-O monitoramento dessa infraestrutura pode ser utilizando uma stack local como ELK ou ELK SaaS. Esperamos a solução na forma de script e documentação caso seja necessário o provisionamento da stack de monitoramento e a configuração do monitoramento das aplicações e banco de dados local. Caso seja uma ferramenta no modelo SaaS precisaremos de scripts que façam a configuração do monitoramento e documentação da utilização da ferramenta SaaS. É necessário realizar as seguintes tarefas no monitoramento da infraestrutura:
-
-- Dashboard de monitoramento de métricas dos recursos das aplicações e do serviço de banco de dados;
-- Dashboard para monitoramento das aplicações, podendo ser no modelo do APM ou busca de logs/erros via pesquisa (requer documentação caso os logs sejam via pesquisa**);
-- Envio de alertas em caso de problemas;
-- Use sua imaginação :)
-
-**OBS**
-- subir todo ambiente em container (swarm,k8s,docker-compose )
-- salvar ambiente para replicação e avaliação
-
-**Use a seçcão [abaixo](#resolução-do-teste) para documentar a execução do seu teste ou apontar a documentação feita por você.**
 
 ---
 ### Resolução do Teste
 
+### Provisionamento ambiente Amazon EC2
 
----
-### Resultados
 
-Aceitaremos um fork deste repositório com suas alterações. Para isso, siga as instruções abaixo:
+aws ec2 create-security-group --group-name SocSG --description "Security group minimo para SOC" --vpc-id vpc-da44c4bd
+aws ec2 authorize-security-group-ingress --group-id SocSG --protocol tcp --port 1-65535 --cidr 45.235.52.206/32
 
-1. Clone o repositório localmente em seu computador:
+aws ec2 create-volume --volume-type gp2 --size 32 --availability-zone us-east-1a
+aws ec2 run-instances --image-id ami-0947d2ba12ee1ff75 --count 1 --instance-type t2.large --key-name soc --security-group-ids SocSG --subnet-id subnet-b41560d1
 
-   `git clone https://github.com/guilhermealbuquerquezup/challenge-soc.git`
+aws ec2 describe-volumes
+aws ec2 describe-instances
 
-2. Crie sua solução modificando e/ou criandos novos arquivos.
-
-3. Crie o novo repositório no seu GitHub ou GitLab.
-
-4. Clone o novo repositório localmente em seu computador:
-
-   `git clone https://github.com/<usuario>/<nome-novo-repositorio>.git`
-
-4. Adicione arquivos novos, caso os tenha criado.
-
-   `git add .`
-
-5. Commit local das suas modificações
-
-   `git commit -am "<commit-message>"`
-
-6. Gere um arquivo .patch com suas modificações locais
-
-   `git push origin <nome-da-branch>`
-
-7. Responda o e-mail anexando o link do repositório público.
-
-**PS: O código ou documentação feita por você não será reutilizado por nós na Zup! :)**
+aws ec2 attach-volume --volume-id vol-1234567890abcdef0 --instance-id i-01474ef662b89480 --device /dev/sdb
