@@ -105,16 +105,11 @@ services:
     user: root #To read the docker socket
     image: docker.elastic.co/beats/metricbeat:7.9.3
     volumes:
-      #Mount the metricbeat configuration so users can make edits.
       - ./config/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
-      #Mount the modules.d directory into the container. This allows user to potentially make changes to the modules and they will be dynamically loaded.
       - ./config/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
-      #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
       - /proc:/hostfs/proc:ro
       - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
-      #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
-      #We mount the host filesystem so we can report on disk usage with the system module.
       - /:/hostfs:ro
     command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false
     networks:
@@ -132,30 +127,25 @@ services:
     user: root #To read the docker socket
     image: "docker.elastic.co/beats/auditbeat:7.9.3"
     volumes:
-      #Mount the Auditbeat configuration so users can make edits.
       - ./config/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
-      #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       elasticsearch: { condition: service_healthy }
     command: auditbeat -e -strict.perms=false
-    pid: "host" # Set the required permissions with pid and cap_add for Auditbeat
+    pid: "host"
     cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
     networks:
       - backend
       - frontend
     restart: always
 
-  #Heartbeat container
   heartbeat:
     container_name: heartbeat
     hostname: heartbeat
-    user: root #To read the docker socket
+    user: root
     image: "docker.elastic.co/beats/heartbeat:7.9.3"
     volumes:
-      #Mount the Heartbeat configuration so users can make edits.
       - ./config/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
-      #Allows us to report on docker from the hosts information.
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       elasticsearch: { condition: service_healthy }

@@ -1,7 +1,6 @@
 heartbeat.monitors:
 
 
-#Monitor all containers using an icmp ping
 - type: icmp
   schedule: '*/5 * * * * * *'
   hosts: ["filebeat","metricbeat","packetbeat","elasticsearch","kibana","frontend","db","wordpress"]
@@ -11,8 +10,6 @@ heartbeat.monitors:
   timeout: 3s
   wait: 1s
 
-
-#Monitor the Elasticsearch instance.
 - type: http
   enabled: true
   schedule: '@every 5s'
@@ -26,8 +23,6 @@ heartbeat.monitors:
   check.response:
     status: 200
 
-
-#Monitor the Kibana instance.
 - type: http
   enabled: true
   schedule: '@every 5s'
@@ -41,8 +36,6 @@ heartbeat.monitors:
   check.response:
     status: 200
 
-
-#Monitor the nginx instance.
 - type: http
   enabled: true
   schedule: '@every 5s'
@@ -56,8 +49,6 @@ heartbeat.monitors:
   check.response:
     status: 200
 
-
-#Monitor the MySQL instance.
 - type: tcp
   enabled: true
   schedule: '@every 5s'

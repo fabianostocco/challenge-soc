@@ -5,6 +5,7 @@
  * [Introdução](#Introdução)</li>
  * [Resolução do Teste](#resolução-do-teste)</li>
  * [Resultados](#resultados)</li>
+ * [Referências](#Referências)</li>
 <!--te-->
 
 ---
@@ -103,9 +104,25 @@ chmod +x /usr/local/bin/docker-compose
 echo "vm.max_map_count=262144" >> /etc/sysctl.conf
 sysctl -p
 ```
-### Ambiente Docker Compose
+### Docker Compose
 ```
-
-
+cd ~
+git clone https://github.com/fabianostocco/challenge-soc.git
+cd ~/challenge-soc/infra/
+sudo /usr/local/bin/docker-compose --env-file ./config/.env.soc up
 ```
+### Referências:
 
+(https://medium.com/@0xgradius/containerizing-my-nsm-stack-docker-suricata-and-elk-5be84f17c684)
+
+(https://github.com/Atomicorp/openvas-docker)
+
+(https://hub.docker.com/r/securecompliance/gvm/)
+
+(https://www.sarulabs.com/post/5/2019-08-12/sending-docker-logs-to-elasticsearch-and-kibana-with-filebeat.html)
+
+(https://docs.fluentd.org/container-deployment/docker-compose)
+
+(https://github.com/bulju/suricata-elk/blob/master/docker-compose.yml)
+
+(https://github.com/xeraa/elastic-docker/blob/master/full_stack/docker-compose.yml)
