@@ -1,4 +1,4 @@
-Nesse arquivo contém as instruções para relizar o teste para a vaga na equipe de SOC na Zup.
+
 
 ### Índice
 <!--ts-->
@@ -9,6 +9,30 @@ Nesse arquivo contém as instruções para relizar o teste para a vaga na equipe
 
 ---
 ### Instruções
+
+Segue possível resolução para o Teste de SOC.
+
+- Ambiente EC2 Amazon, se utilizando de comandos “awscli” para provisionamento.
+Partindo do bate papo, referenciaram a utilização da Amazon como Cloud padrão.
+
+- Foi utilizado o Docker Compose para Start dos contêineres.
+
+- Efetuar uma analise de vulnerabilidade no ambiente (utilizando ferramentas de análise de vulnerabilidade do mercado ou qualquer uma opensource):
+Sera implementando GVM (Greenbone Vulnerability Manager ). Tal ferramenta consegue detectar aplicações, versões e possíveis vulnerabilidades.
+
+- Enviar todos logs para um concentrador de logs (utilizar a stack ELK).
+Utilizado o Filebeat como ferramenta de coleta e envio dos logs ao ElasticSearch.
+
+- monitorar todo ambiente com IDS/IPS (suricata ou snort)
+Utilizado o Suricata em contêiner privilegiado para monitoramento da interface de entrada do servidor. Não iremos monitorar a comunicação entre as aplicações(DMZ).
+
+
+
+### Provisionamento Ambiente EC2
+
+
+
+
 
 Para teste você deverá:
 ```
