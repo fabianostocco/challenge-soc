@@ -5,6 +5,7 @@
  * [Introdução](#Introdução)</li>
  * [Resolução do Teste](#resolução-do-teste)</li>
  * [Resultados](#resultados)</li>
+ * [Evidências](#Evidências)</li>
  * [Referências](#Referências)</li>
 <!--te-->
 
@@ -111,6 +112,12 @@ git clone https://github.com/fabianostocco/challenge-soc.git
 cd ~/challenge-soc/infra/
 sudo /usr/local/bin/docker-compose --env-file ./config/.env.soc up
 ```
+
+### Evidências:
+
+Coloquei as imagens evidenciando as execuções sitadas acima.
+(https://drive.google.com/drive/u/0/folders/1zzcZDiEWsTgJLJR0lIJskKH1V4zkPnnx)
+
 ### Referências:
 
 (https://medium.com/@0xgradius/containerizing-my-nsm-stack-docker-suricata-and-elk-5be84f17c684)
