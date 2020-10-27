@@ -11,12 +11,12 @@ services:
       - "8080:80"
     volumes:
       - wordpress:/var/www/html
-      - ./nginx-conf:/etc/nginx/conf.d
+      - ./config/nginx-conf:/etc/nginx/conf.d
     networks:
       - frontend
       
   wordpress:
-    image: wordpress-image
+    image: wordpress:php7.3-fpm-alpine
     container_name: wordpress
     restart: always
     ports:
@@ -53,9 +53,156 @@ services:
       MYSQL_PASSWORD: $MYSQL_PASSWORD
       MYSQL_DATABASE: wordpress
 
+  elasticsearch:
+    image: "docker.elastic.co/elasticsearch/elasticsearch:7.9.3"
+    container_name: elasticsearch
+    environment:
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - backend
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl","-s" ,"-f", "http://localhost:9200/_cat/health"]
+
+  kibana:
+    image: "docker.elastic.co/kibana/kibana:7.9.3"
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      elasticsearch: { condition: service_healthy }
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-s", "-f", "http://localhost:5601/"]
+      retries: 6
+
+  filebeat:
+    image: "docker.elastic.co/beats/filebeat:7.9.3"
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - suricata-logs:/var/log/suricata:rw
+    networks:
+      - backend
+    restart: always
+    depends_on:
+      elasticsearch: { condition: service_healthy }
+
+  metricbeat:
+    container_name: metricbeat
+    hostname: metricbeat
+    user: root #To read the docker socket
+    image: docker.elastic.co/beats/metricbeat:7.9.3
+    volumes:
+      #Mount the metricbeat configuration so users can make edits.
+      - ./config/metricbeat/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      #Mount the modules.d directory into the container. This allows user to potentially make changes to the modules and they will be dynamically loaded.
+      - ./config/metricbeat/modules.d/:/usr/share/metricbeat/modules.d/
+      #The commented sections below enable Metricbeat to monitor the Docker host rather than the Metricbeat container. These are used by the system module.
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+      #We mount the host filesystem so we can report on disk usage with the system module.
+      - /:/hostfs:ro
+    command: metricbeat -e -system.hostfs=/hostfs -strict.perms=false
+    networks:
+      - backend
+      - frontend
+    restart: always
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    depends_on:
+      elasticsearch: { condition: service_healthy }
+
+  auditbeat:
+    container_name: auditbeat
+    hostname: auditbeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/auditbeat:7.9.3"
+    volumes:
+      #Mount the Auditbeat configuration so users can make edits.
+      - ./config/auditbeat/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      elasticsearch: { condition: service_healthy }
+    command: auditbeat -e -strict.perms=false
+    pid: "host" # Set the required permissions with pid and cap_add for Auditbeat
+    cap_add: ['AUDIT_CONTROL', 'AUDIT_READ']
+    networks:
+      - backend
+      - frontend
+    restart: always
+
+  #Heartbeat container
+  heartbeat:
+    container_name: heartbeat
+    hostname: heartbeat
+    user: root #To read the docker socket
+    image: "docker.elastic.co/beats/heartbeat:7.9.3"
+    volumes:
+      #Mount the Heartbeat configuration so users can make edits.
+      - ./config/heartbeat/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      elasticsearch: { condition: service_healthy }
+    command: heartbeat -e -strict.perms=false
+    networks:
+      - backend
+      - frontend
+    restart: always
+
+  gvm:
+    image: "securecompliance/gvm:11.0.1-v1"
+    container_name: gvm
+    ports:
+      - "9392:9392"
+    links:
+      - db
+      - frontend
+      - wordpress
+      - filebeat
+      - elasticsearch
+      - kibana
+      - metricbeat
+    volumes:
+      - gvm-data:/data
+    networks:
+      - backend
+      - frontend
+    restart: always
+
+  suricata-build:
+    container_name: suricata-build
+    network_mode: "host"
+    cap_add:
+     - NET_ADMIN
+     - SYS_NICE
+     - NET_RAW
+    build: ./config/suricata
+    volumes:
+     - suricata-logs:/var/log/suricata
+    user: root
+
 volumes:
   wordpress:
   dbdata:
+  elasticsearch_data:
+  gvm-data:
+  suricata-logs:
 
 networks:
   frontend:
